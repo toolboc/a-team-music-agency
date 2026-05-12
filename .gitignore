@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+tools/.venv/
+
+# ── Song artifacts (generated; not committed) ───────────────────────────────
+# Audio renders
+songs/**/iterations/**/audio.*
+*.wav
+*.mp3
+*.flac
+*.aac
+*.opus
+
+# Analysis / critique outputs (can be regenerated)
+songs/**/iterations/**/analysis.json
+
+# All project-specific song content (keep the songs/ dir itself via .gitkeep)
+songs/poe-*/
+songs/poe-*/
+
+# ── Project-specific directories (not part of the reusable framework) ────────
+# Album editions and experiments live outside the songs/ workflow
+Poe Experiment/
+Poe Experiment - */
+Poe Hand-Picked/
+Nietzsche - */
+The Epstein Files - */
+Epstein Files - */
+Breaking News - */
+Jung - */
+Reverse Prompt/
+specs/
+
+# ── Project-specific tools (generated for specific albums) ──────────────────
+# Generalised equivalents live in render_batch.py / mix_tracks.py
+tools/render_*_batch.py
+tools/render_eulogy_remixes.py
+tools/build_*_playlist.py
+tools/generate_*_prompts.py
+tools/generate_epstein_captions.py
+tools/transcribe_epstein_mix.py
+tools/autopilot.py
+tools/run_*.ps1
+
+# API exploration / debug scripts
+tools/_check_*.py
+tools/_discover_api.py
+tools/_find_*.py
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+autopilot_log.txt
+autopilot_*.log
+autopilot_session.log
+
+# ── Memory: decisions are project-specific, future-ideas are personal ────────
+memory/decisions.md
+memory/future-ideas.md
+
+# ── Editor / OS ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json

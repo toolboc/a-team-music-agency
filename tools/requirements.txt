@@ -1,0 +1,12 @@
+# Python deps for the music studio tooling.
+# Producer needs: gradio_client (calls ACE-STEP)
+# Critic needs: librosa (audio features), soundfile (read WAV), numpy
+# Optional: openai-whisper for lyric transcription (heavy; skip if not needed)
+
+gradio_client>=1.3.0
+librosa>=0.10.1
+soundfile>=0.12.1
+numpy>=1.24
+scipy>=1.11
+# Optional — uncomment to enable lyric transcription in the critic
+# openai-whisper>=20231117
