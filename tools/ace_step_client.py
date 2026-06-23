@@ -74,8 +74,8 @@ def _build_args(prompt: dict[str, Any]) -> list[Any]:
         int(prompt.get("batch_size", 1)),                     # [12] Batch Size (int!)
         _file_data(prompt.get("source_audio")),               # [13] Source Audio (retake/remix)
         None,                                                 # [14] LM Codes Hints
-        0.0,                                                  # [15] Repainting Start
-        -1.0,                                                 # [16] Repainting End
+        float(prompt.get("repaint_start", 0.0)),              # [15] Repainting Start (seconds)
+        float(prompt.get("repaint_end", -1.0)),               # [16] Repainting End (seconds; -1 = full)
         "Fill the audio semantic mask based on the given conditions:",  # [17] Instruction
         float(prompt.get("lm_codes_strength", 1.0)),          # [18] LM Codes Strength
         float(prompt.get("cover_strength", 0.0)),              # [19] Cover Strength
@@ -100,7 +100,7 @@ def _build_args(prompt: dict[str, Any]) -> list[Any]:
         48000,                                                # [38] MP3 Sample Rate (int, not str in 1.5!)
         float(prompt.get("lm_temperature", 0.85)),            # [39] LM Temperature
         False,                                                # [40] Think
-        2.0,                                                  # [41] LM CFG Scale
+        float(prompt.get("lm_cfg_scale", 2.0)),              # [41] LM CFG Scale (higher = LM follows style tags more strictly)
         0,                                                    # [42] LM Top-K (int!)
         0.9,                                                  # [43] LM Top-P
         str(prompt.get("negative_prompt", "NO USER INPUT")),  # [44] LM Negative Prompt
