@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Transcribe a single audio file via whisper-asr-service and print segments."""
-import argparse, json, urllib.request
+import argparse, json, os, urllib.request
 from pathlib import Path
 
-WHISPER_URL = "http://192.168.1.171:9000/asr"
+WHISPER_URL = os.environ.get("WHISPER_URL", "http://192.168.1.171:9000/asr")
 
 def main():
     ap = argparse.ArgumentParser()

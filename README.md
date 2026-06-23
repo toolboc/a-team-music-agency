@@ -23,6 +23,21 @@ Edgar Allan Poe"* — and the squad will:
 4. **Iterate** (`conductor`) — Decide whether to ship, re-render with tweaked
    parameters, or kick back to the lyricist for a re-brief. Cap: 5 iterations.
 
+Beyond the core loop, the toolset also supports:
+
+- **Cover generation** — ACE-STEP cover mode with dual-audio technique: strip
+  vocals first (`strip_vocals.py`), use the clean instrumental as `source_audio`
+  and the original as `reference_audio` to get melody contour without vocal bleed.
+- **Stem-by-stem covers** (`render_stem_covers.py`) — Separate a source track
+  into up to 6 stems (drums, bass, guitar, piano, other, vocals) via Demucs, then
+  transform each stem independently through ACE-STEP and re-mix, for fine-grained
+  timbral control over each instrument layer.
+- **Chopped & screwed** (`screw_and_chop.py`) — DJ Screw style post-processing:
+  beat-detect, stutter-chop bars, time-stretch slow, pitch-shift down, and add a
+  syrup echo — all in one pass with no extra dependencies beyond librosa/scipy.
+- **Transcription** (`transcribe_single.py`) — Whisper ASR via a self-hosted
+  whisper-asr-service endpoint (configured with `WHISPER_URL` env var).
+
 ## The squad
 
 | Agent | Codename | Role |
@@ -66,15 +81,29 @@ theme:
 The conductor handles the rest, delegating to the lyricist, producer, and
 critic in turn. Output appears under `songs/<slug>/`.
 
+## Tools reference
+
+| Script | Purpose | Key deps |
+|--------|---------|----------|
+| `tools/ace_step_client.py` | Calls ACE-STEP Gradio endpoint; resolves `prompt.json` → audio | `gradio_client` |
+| `tools/analyze_audio.py` | Librosa-based audio analysis (tempo, key, energy, vocal F0) | `librosa`, `numpy` |
+| `tools/strip_vocals.py` | Vocal removal via Demucs; outputs `no_vocals.wav` | `demucs`, `soundfile` |
+| `tools/extract_stems.py` | 4- or 6-stem separation via Demucs (`htdemucs_6s`) | `demucs`, `soundfile` |
+| `tools/render_stem_covers.py` | Orchestrates per-stem ACE-STEP cover + final mix | `ace_step_client`, `soundfile` |
+| `tools/screw_and_chop.py` | DJ Screw style: chop, time-stretch, pitch-shift, syrup echo | `librosa`, `scipy` |
+| `tools/transcribe_single.py` | Whisper ASR via `WHISPER_URL` env var endpoint | stdlib only |
+| `tools/render_batch.py` | Batch-render a playlist of `prompt.json` files | `ace_step_client` |
+| `tools/mix_tracks.py` | Mix/normalise a set of WAVs into a mastered album sequence | `librosa`, `soundfile` |
+
 ## Layout
 
 ```
 .github/agents/        # The four custom agents (.agent.md)
 .github/prompts/       # Reusable slash-command prompts
-tools/                 # ACE-STEP client + audio analysis CLIs
+tools/                 # ACE-STEP client + audio/stem/FX CLIs
 songs/<slug>/          # Per-song artifacts: brief, iterations, final
 memory/                # Shared decisions & conventions
-specs/                 # Long-form production specs (optional)
+projects/              # Your own albums & experiments (gitignored)
 AGENTS.md              # Project rules + shared memory contract
 ```
 

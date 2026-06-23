@@ -125,11 +125,11 @@ def analyze(audio_path: Path) -> dict[str, Any]:
 
     # ── Vocal F0 estimation (YIN on harmonic signal) ──────────────────────────
     # Run YIN pitch tracker on the harmonic component only (percussion removed).
-    # Restrict to typical vocal range 70-600 Hz.
-    # Filter frames where the harmonic signal is too quiet (likely instrumental
-    # sections or silence) so they don't drag the median toward unvoiced pitch.
+    # fmin=150 Hz (above bass guitar range, E2=82Hz, D3=147Hz) so that a
+    # prominent bass guitar doesn't dominate and pull median down into 80–110 Hz.
+    # Typical male tenor sits at 150–520 Hz; female vocal 200–1000 Hz.
     try:
-        f0 = librosa.yin(y_harm, fmin=70.0, fmax=600.0, sr=sr)
+        f0 = librosa.yin(y_harm, fmin=150.0, fmax=700.0, sr=sr)
         # Per-frame RMS of harmonic signal — use to mask unvoiced frames
         hop = 512
         frame_rms = np.array([
@@ -137,7 +137,7 @@ def analyze(audio_path: Path) -> dict[str, Any]:
             for i in range(len(f0))
         ])
         rms_threshold = float(np.percentile(frame_rms, 40))  # bottom 40% = unvoiced/quiet
-        voiced = f0[(frame_rms >= rms_threshold) & (f0 > 70) & (f0 < 580)]
+        voiced = f0[(frame_rms >= rms_threshold) & (f0 > 150) & (f0 < 680)]
         if len(voiced) > 10:
             f0_median = float(np.median(voiced))
             f0_std = float(np.std(voiced))
