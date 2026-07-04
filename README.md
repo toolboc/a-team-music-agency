@@ -22,6 +22,9 @@ Edgar Allan Poe"* — and the squad will:
    and emit refinement notes.
 4. **Iterate** (`conductor`) — Decide whether to ship, re-render with tweaked
    parameters, or kick back to the lyricist for a re-brief. Cap: 5 iterations.
+5. **Release for YouTube** (`release-manager`) — Build upload-ready assets from
+  finished tracks + artwork as either a full-album video, per-track playlist
+  videos, or both.
 
 Beyond the core loop, the toolset also supports:
 
@@ -46,6 +49,7 @@ Beyond the core loop, the toolset also supports:
 | **lyricist** | Cohen | Researches theme, writes lyrics, drafts the production brief |
 | **producer** | Rubin | Calls ACE-STEP 1.5, manages prompt parameters, renders audio |
 | **critic** | Pauline | Listens back, scores against brief, emits actionable refinements |
+| **release-manager** | Nora | Packages finished tracks for YouTube with ffmpeg + artwork |
 
 ## Setup
 
@@ -94,11 +98,12 @@ critic in turn. Output appears under `songs/<slug>/`.
 | `tools/transcribe_single.py` | Whisper ASR via `WHISPER_URL` env var endpoint | stdlib only |
 | `tools/render_batch.py` | Batch-render a playlist of `prompt.json` files | `ace_step_client` |
 | `tools/mix_tracks.py` | Mix/normalise a set of WAVs into a mastered album sequence | `librosa`, `soundfile` |
+| `tools/prepare_youtube_release.py` | Build YouTube release assets: full album and/or per-track videos from artwork | ffmpeg/ffprobe (system) |
 
 ## Layout
 
 ```
-.github/agents/        # The four custom agents (.agent.md)
+.github/agents/        # The five custom agents (.agent.md)
 .github/prompts/       # Reusable slash-command prompts
 tools/                 # ACE-STEP client + audio/stem/FX CLIs
 songs/<slug>/          # Per-song artifacts: brief, iterations, final
@@ -106,6 +111,24 @@ memory/                # Shared decisions & conventions
 projects/              # Your own albums & experiments (gitignored)
 AGENTS.md              # Project rules + shared memory contract
 ```
+
+## YouTube Release Prep
+
+After a song/album is shipped, use the **release-manager** agent (Nora) or run:
+
+```powershell
+python tools/prepare_youtube_release.py `
+  --audio-dir songs/<slug>/final-tracks `
+  --artwork songs/<slug>/cover.jpg `
+  --out-dir songs/<slug>/release `
+  --mode both
+```
+
+Outputs include:
+- `songs/<slug>/release/album/*-full-album.mp4`
+- `songs/<slug>/release/playlist/*.mp4`
+- `songs/<slug>/release/youtube-chapters.txt`
+- `songs/<slug>/release/release-manifest.json`
 
 ## License
 

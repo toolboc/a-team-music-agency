@@ -106,3 +106,23 @@ Example:
 ```powershell
 .venv\Scripts\python.exe tools/strip_vocals.py --audio songs/<slug>/source.mp3 --out songs/<slug>/source_novocals.wav
 ```
+
+### YouTube release packaging (`tools/prepare_youtube_release.py`)
+Create YouTube-ready outputs from a folder of finalized tracks + a single artwork image.
+
+Modes:
+- `album`: one full-album video (`release/album/*-full-album.mp4`)
+- `playlist`: one video per track (`release/playlist/*.mp4`)
+- `both`: generate both sets
+
+Always write alongside video outputs:
+- `release/youtube-chapters.txt` (chapter timestamps for video description)
+- `release/release-manifest.json` (track order, titles, durations, chapter starts)
+
+If exact title/order matters, supply a manifest JSON:
+```json
+[
+  {"file": "01-intro.wav", "title": "Intro"},
+  {"file": "02-main-theme.wav", "title": "Main Theme"}
+]
+```

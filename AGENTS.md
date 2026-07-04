@@ -12,8 +12,11 @@ critically listens to the result, and iterates until the song matches the brief.
 | `lyricist` | Cohen | Researches the theme, writes lyrics, drafts the production brief (genre, tempo, mood, instrumentation). |
 | `producer` | Rubin | Calls ACE-STEP 1.5 (URL from `ACE_STEP_URL` env var) to render audio from a brief + lyrics. |
 | `critic` | Pauline | Listens back, analyzes the rendered audio, scores it against the brief, and emits actionable refinement notes. |
+| `release-manager` | Nora | Packages finished tracks for YouTube using ffmpeg + artwork: full album video, playlist-style per-track videos, or both. |
 
 Default flow: `conductor → lyricist → producer → critic → (refine? back to producer or lyricist) → done`.
+
+Release flow (post-ship): `conductor/user → release-manager`.
 
 ## ACE-STEP Backend
 
@@ -30,6 +33,13 @@ Each song lives under `songs/<slug>/` and contains:
 songs/<slug>/
 ├── brief.md         # Theme, genre, mood, tempo, lyrics — written by lyricist
 ├── prompt.json      # Resolved ACE-STEP parameters — written by producer
+├── release/         # YouTube-ready outputs — written by release-manager
+│   ├── album/
+│   │   └── <slug>-full-album.mp4
+│   ├── playlist/
+│   │   └── 01-<track>.mp4
+│   ├── youtube-chapters.txt
+│   └── release-manifest.json
 ├── iterations/
 │   ├── 01/
 │   │   ├── audio.wav
